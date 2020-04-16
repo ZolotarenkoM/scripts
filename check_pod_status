@@ -1,0 +1,30 @@
+#!/bin/bash
+
+SVC=$1
+NS=$2
+x=1000
+
+function usage {
+    echo "Usage
+    $0 your_svc namespace"
+    exit 1
+}
+#check arguments
+if [ $# -eq 1 ] || [ $# -eq 2 ]; then
+  # default namespace
+  if [[ -z $NS ]]; then NS='some-namespace'; fi
+  while [ $x -gt 0 ]
+  do
+    if [[ $(kubectl get po --context=test.us-east-2.k8s.pingidentity.net -l "app=$SVC" -n $NS --no-headers=true | tr -s " " | cut -d " " -f3) = 'Running' ]]; then
+      kubectl logs -f -l "app=$SVC" -n $NS --context=test.us-east-2.k8s.pingidentity.net
+    else
+      echo "$SVC - $(kubectl get po --context=test.us-east-2.k8s.pingidentity.net -l "app=$SVC" -n $NS --no-headers=true | tr -s " " | cut -d " " -f3)"
+    fi
+    sleep 20
+    x=$(( $x - 1 ))
+  done
+else
+  usage
+fi
+
+exit 0
