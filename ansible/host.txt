@@ -1,0 +1,6 @@
+[UBUNTU]
+ubuntu   ansible_host=192.168.0.106
+
+[CENTOS]
+centos   ansible_host=192.168.0.105
+
